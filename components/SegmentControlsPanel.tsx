@@ -44,7 +44,7 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
                 type="text"
                 value={seg.text}
                 onChange={(e) => updateSegment(idx, { text: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-background text-foreground"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400 bg-muted text-foreground"
               />
             </div>
 
@@ -52,7 +52,7 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
               {/* Background color chip */}
               <input
                 type="color"
-                value={seg.style?.backgroundColor ?? "#ffffff"}
+                value={seg.style?.backgroundColor ?? "#10B981"}
                 onChange={(e) =>
                   updateSegment(idx, { style: { backgroundColor: e.target.value } })
                 }
@@ -77,7 +77,7 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
               {/* Remove */}
               <button
                 onClick={() => removeSegment(idx)}
-                className="ml-auto inline-flex items-center gap-1 rounded-lg bg-red-500/90 text-white px-2 py-1 text-xs hover:bg-red-600 active:scale-95 cursor-pointer"
+                className="ml-auto inline-flex items-center gap-1 rounded-sm bg-red-500/90 text-white px-2 py-1 text-xs hover:bg-red-600 active:scale-95 cursor-pointer"
               >
                 <Trash className="w-4 h-4" />
               </button>
