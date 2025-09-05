@@ -15,12 +15,7 @@ interface SelectFieldProps {
   onChange: (value: string) => void;
 }
 
-export default function SelectField({
-  label,
-  value,
-  options,
-  onChange,
-}: SelectFieldProps) {
+export default function SelectField({ label, value, options, onChange }: SelectFieldProps) {
   return (
     <div>
       <label className="block text-sm font-medium mb-1">{label}</label>
@@ -28,7 +23,7 @@ export default function SelectField({
         <div className="relative">
           {/* Button */}
           <Listbox.Button className="flex items-center justify-between w-full border border-gray-300 rounded px-3 py-2 text-left focus:outline-none focus:ring-2 focus:ring-amber-400">
-           <span>
+            <span>
               {options.find((o) => o.value === value)?.label ?? value}
             </span>
             <ChevronDown className="h-4 w-4 text-gray-500 pointer-events-none" />
@@ -41,9 +36,7 @@ export default function SelectField({
                 key={opt.value}
                 value={opt.value}
                 className={({ active }) =>
-                  `px-3 py-2 cursor-pointer ${
-                    active ? "bg-amber-400 text-white" : ""
-                  }`
+                  `px-3 py-2 cursor-pointer ${active ? "bg-amber-400 text-white" : ""}`
                 }
               >
                 {opt.label}

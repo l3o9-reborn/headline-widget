@@ -1,31 +1,28 @@
 "use client";
 
-import { Dispatch, SetStateAction } from "react";
-import { HeadlineSettings } from "@/lib/types";
+import type { Dispatch, SetStateAction } from "react";
+import type { HeadlineSettings, GradientDirection } from "@/lib/types";
 import SelectField from "./SelectField";
-import { div } from "framer-motion/client";
 
 interface Props {
   settings: HeadlineSettings;
   setSettings: Dispatch<SetStateAction<HeadlineSettings>>;
 }
 
+const FONT_WEIGHT_OPTIONS = [
+  { value: "100", label: "Thin 100" },
+  { value: "300", label: "Light 300" },
+  { value: "400", label: "Normal 400" },
+  { value: "500", label: "Medium 500" },
+  { value: "600", label: "Semibold 600" },
+  { value: "700", label: "Bold 700" },
+  { value: "800", label: "Extrabold 800" },
+  { value: "900", label: "Black 900" },
+];
+
 export default function ControlsPanel({ settings, setSettings }: Props) {
   return (
     <div className="flex flex-col gap-6 text-foreground/80">
-      {/* Headline Text */}
-      <div>
-        <label className="block text-sm font-medium mb-1">Headline Text</label>
-        <input
-          type="text"
-          value={settings.text}
-          onChange={(e) =>
-            setSettings({ ...settings, text: e.target.value })
-          }
-          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
-        />
-      </div>
-
       {/* Font Family */}
       <SelectField
         label="Font Family"
@@ -34,7 +31,7 @@ export default function ControlsPanel({ settings, setSettings }: Props) {
           { value: "Poppins", label: "Poppins" },
           { value: "Inter", label: "Inter" },
           { value: "Roboto", label: "Roboto" },
-          { value: "Sans-Serif", label: "Sans-Serif" },
+          { value: "sans-serif", label: "Sans Serif" },
         ]}
         onChange={(val) => setSettings({ ...settings, fontFamily: val })}
       />
@@ -47,38 +44,33 @@ export default function ControlsPanel({ settings, setSettings }: Props) {
         <input
           type="range"
           min={16}
-          max={120}
+          max={160}
           value={settings.fontSize}
           onChange={(e) =>
-            setSettings({ ...settings, fontSize: parseInt(e.target.value) })
+            setSettings({ ...settings, fontSize: Number(e.target.value) })
           }
-          className="w-full"
+          className="w-full accent-amber-500 cursor-pointer"
         />
       </div>
 
       {/* Font Weight */}
       <SelectField
         label="Font Weight"
-        value={settings.fontWeight}
-        options={[
-          { value: "thin", label: "Thin" },
-          { value: "normal", label: "Normal" },
-          { value: "medium", label: "Medium" },
-          { value: "bold", label: "Bold" },
-          { value: "extrabold", label: "Extra Bold" },
-        ]}
-        onChange={(val) => setSettings({ ...settings, fontWeight: val })}
+        value={String(settings.fontWeight)}
+        options={FONT_WEIGHT_OPTIONS}
+        onChange={(val) =>
+          setSettings({ ...settings, fontWeight: Number.parseInt(val, 10) })
+        }
       />
 
       {/* Gradient Toggle */}
-      <div className="flex items-center gap-2">
-        <label className="block text-sm font-medium">Gradient</label>
+      <div className="flex items-center gap-3">
+        <label className="text-sm font-medium">Gradient</label>
         <input
           type="checkbox"
           checked={settings.gradient}
-          onChange={(e) =>
-            setSettings({ ...settings, gradient: e.target.checked })
-          }
+          onChange={(e) => setSettings({ ...settings, gradient: e.target.checked })}
+          className="size-4 accent-amber-500 cursor-pointer"
         />
       </div>
 
@@ -88,24 +80,24 @@ export default function ControlsPanel({ settings, setSettings }: Props) {
           label="Gradient Direction"
           value={settings.gradientDirection}
           options={[
-            { value: "to-r", label: "→" },
-            { value: "to-l", label: "←" },
-            { value: "to-t", label: "↑" },
-            { value: "to-b", label: "↓" },
+            { value: "to-r", label: "→ Right" },
+            { value: "to-l", label: "← Left" },
+            { value: "to-t", label: "↑ Top" },
+            { value: "to-b", label: "↓ Bottom" },
           ]}
           onChange={(val) =>
-            setSettings({ ...settings, gradientDirection: val as any })
+            setSettings({ ...settings, gradientDirection: val as GradientDirection })
           }
-      />
+        />
       )}
 
       {/* Gradient Colors */}
       {settings.gradient && (
         <div>
-          <label className="block text-sm font-medium">Gradient Colors</label>
+          <label className="block text-sm font-medium mb-2">Gradient Colors</label>
           <div className="flex gap-2">
-
             <input
+              aria-label="Gradient start color"
               type="color"
               value={settings.gradientColors[0]}
               onChange={(e) =>
@@ -114,9 +106,10 @@ export default function ControlsPanel({ settings, setSettings }: Props) {
                   gradientColors: [e.target.value, settings.gradientColors[1]],
                 })
               }
-              className="w-1/2 cursor-pointer h-10  p-1 border-0 hover:scale-105 duration-300 "
+              className="w-1/2 h-10 rounded-md cursor-pointer  hover:scale-105 transition-transform duration-200"
             />
             <input
+              aria-label="Gradient end color"
               type="color"
               value={settings.gradientColors[1]}
               onChange={(e) =>
@@ -125,62 +118,60 @@ export default function ControlsPanel({ settings, setSettings }: Props) {
                   gradientColors: [settings.gradientColors[0], e.target.value],
                 })
               }
-            className="w-1/2 cursor-pointer h-10 p-1 border-0 hover:scale-105 duration-300 "
+              className="w-1/2 h-10 rounded-md cursor-pointer  hover:scale-105 transition-transform duration-200"
             />
           </div>
         </div>
       )}
+
       {/* Animation Type */}
       <SelectField
         label="Animation"
-        value={settings.animationType || "fade"}
+        value={settings.animationType ?? "fade"}
         options={[
           { value: "fade", label: "Fade In" },
           { value: "hoverGlow", label: "Hover Glow" },
-          { value: "perLetter", label: "Per-Letter Animation" },
-          { value: "textShadow", label: "Text Shadow / Outline" },
+          { value: "perLetter", label: "Per-Letter" },
+          { value: "textShadow", label: "Text Shadow" },
         ]}
-        onChange={(val) => setSettings({ ...settings, animationType: val as any })}
+        onChange={(val) => setSettings({ ...settings, animationType: val as HeadlineSettings["animationType"] })}
       />
+
       {/* Duration */}
       <div>
         <label className="block text-sm font-medium mb-1">
-          Duration: {settings.duration || 0.8}s
+          Duration: {settings.duration ?? 0.8}s
         </label>
         <input
           type="range"
-          min={0.2}
+          min={0.1}
           max={5}
           step={0.1}
-          value={settings.duration || 0.8}
+          value={settings.duration ?? 0.8}
           onChange={(e) =>
-            setSettings({ ...settings, duration: parseFloat(e.target.value) })
+            setSettings({ ...settings, duration: Number.parseFloat(e.target.value) })
           }
-          className="w-full"
+          className="w-full accent-amber-500 cursor-pointer"
         />
       </div>
 
       {/* Delay */}
       <div>
         <label className="block text-sm font-medium mb-1">
-          Delay: {settings.delay || 0}s
+          Delay: {settings.delay ?? 0}s
         </label>
         <input
           type="range"
           min={0}
           max={5}
           step={0.1}
-          value={settings.delay || 0}
+          value={settings.delay ?? 0}
           onChange={(e) =>
-            setSettings({ ...settings, delay: parseFloat(e.target.value) })
+            setSettings({ ...settings, delay: Number.parseFloat(e.target.value) })
           }
-          className="w-full"
+          className="w-full accent-amber-500 cursor-pointer"
         />
       </div>
-
-
-      
-
     </div>
   );
 }

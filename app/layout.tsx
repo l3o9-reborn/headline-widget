@@ -14,10 +14,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const baseUrl= 'https://munnahleon.vercel.app'
+
 export const metadata: Metadata = {
-  title: "Headline Preview Demo",
-  description: "Designed By L3o9-reborn",
+    metadataBase: new URL(baseUrl),
+    title: "Headline Preview Demo",
+    description: "Designed By L3o9-reborn",
+    keywords: ["Munna Hasan Leon", "Full Stack Developer", "Next.js", "React", "TypeScript", "Portfolio", "Full Stack", "Web Development"],
+    authors: [{ name: "Munna Hasan Leon", url: baseUrl }],
+    creator: "L3o9 Reborn",
 };
+
+
+
+ 
 
 export default function RootLayout({
   children,
