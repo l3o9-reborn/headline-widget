@@ -24,7 +24,9 @@ export default function Home() {
   const [showSegments, setShowSegments] = useState(false);
 
   const exportJSON = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(settings, null, 2));
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(settings, null, 2));
     const dlAnchor = document.createElement("a");
     dlAnchor.setAttribute("href", dataStr);
     dlAnchor.setAttribute("download", "headline-settings.json");
@@ -38,7 +40,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-5 relative flex flex-col-reverse md:flex-row">
+    <div className="min-h-screen relative p-5 flex flex-col md:flex-row-reverse items-center justify-between gap-5">
       {/* Top-right mode toggle */}
       <div className="absolute top-5 right-5 z-50 flex gap-2">
         <ModeToggle />
@@ -56,8 +58,15 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Left: Controls Panel */}
-      <div className="w-full  md:max-w-[400px] md:w-1/3 bg-muted rounded-lg shadow flex flex-col">
+      {/* Right / Top Preview */}
+      <div className="w-full mt-15 md:mt-0 md:w-2/3 flex-shrink-0 mb-5 md:mb-0">
+        <div className="sticky top-20 md:top-5 w-full h-[300px] md:h-[600px] flex items-center justify-center rounded-lg bg-background shadow-sm shadow-foreground">
+          <HeadlinePreview settings={settings} />
+        </div>
+      </div>
+
+      {/* Left / Bottom Controls */}
+      <div className="w-full md:max-w-[400px] md:w-1/3 flex flex-col bg-muted rounded-lg shadow overflow-hidden">
         {/* Toggle buttons */}
         <div className="flex w-full gap-2 p-1 h-12">
           <button
@@ -78,21 +87,15 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Panel content */}
-        <div className="flex-1 relative overflow-auto p-6">
+        {/* Scrollable panel content */}
+        <div className="flex-1 overflow-auto p-6 max-h-[calc(100vh-500px)] md:max-h-[90vh] md:min-h-[90vh] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {!showSegments ? (
             <ControlsPanel settings={settings} setSettings={setSettings} />
           ) : (
             <SegmentControlsPanel settings={settings} setSettings={setSettings} />
           )}
         </div>
-      </div>
 
-      {/* Right: Preview */}
-      <div className=" mt-10 md:mt-0 w-full md:w-2/3 flex items-center justify-center p-8 ">
-        <div className="w-full h-[400px] md:h-[600px] flex items-center justify-center rounded-lg bg-background shadow-sm shadow-foreground">
-          <HeadlinePreview settings={settings} />
-        </div>
       </div>
     </div>
   );

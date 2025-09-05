@@ -29,9 +29,9 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col text-foreground/80 gap-4">
-      {/* Segments */}
-      <div className="flex flex-col gap-2 lg:gap-4 w-full h-full overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="relative w-full h-full min-h-[50vh] flex flex-col text-foreground/80 gap-4">
+      {/* Scrollable content */}
+      <div className="flex flex-col gap-2 lg:gap-4 w-full h-full overflow-auto max-h-[calc(100vh-150px)] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {segments.map((seg, idx) => (
           <div
             key={idx}
@@ -50,17 +50,15 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
 
             <div className="flex items-center justify-between gap-3">
               {/* Background color chip */}
-              <div className="flex flex-col">
-                <input
-                  type="color"
-                  value={seg.style?.backgroundColor ?? "#ffffff"}
-                  onChange={(e) =>
-                    updateSegment(idx, { style: { backgroundColor: e.target.value } })
-                  }
-                  className="w-16 md:w-24  h-8 rounded-md cursor-pointer "
-                  title="Background object"
-                />
-              </div>
+              <input
+                type="color"
+                value={seg.style?.backgroundColor ?? "#ffffff"}
+                onChange={(e) =>
+                  updateSegment(idx, { style: { backgroundColor: e.target.value } })
+                }
+                className="w-16 md:w-24 h-8 rounded-md cursor-pointer"
+                title="Background color"
+              />
 
               {/* Underline toggle */}
               <label className="inline-flex items-center gap-2 select-none">
@@ -71,9 +69,9 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
                     updateSegment(idx, { style: { underline: e.target.checked } })
                   }
                   className="size-4 accent-amber-500 cursor-pointer"
-                  title="underline"
+                  title="Underline"
                 />
-                <span className="text-xs md:text-sm font-light   md:hidden lg:block">Underline</span>
+                <span className="text-xs md:text-sm md:hidden lg:block">Underline</span>
               </label>
 
               {/* Remove */}
@@ -88,24 +86,21 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
         ))}
 
         {segments.length === 0 && (
-          <p className="text-xs text-muted-foreground">No segments yet. Click the + to add one.</p>
+          <p className="text-xs text-muted-foreground">
+            No segments yet. Click the + to add one.
+          </p>
         )}
       </div>
 
       {/* Add Segment Button */}
-      <div className="sticky bottom-0 self-end mt-2">
-        <div className="relative inline-flex group">
-          <button
-            onClick={addSegment}
-            className="w-12 h-12 flex items-center justify-center text-2xl bg-amber-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform"
-            aria-label="Add segment"
-          >
-            <Plus />
-          </button>
-          <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-            Add Headline Text
-          </span>
-        </div>
+      <div className="fixed bottom-5 right-5  self-start mt-2">
+        <button
+          onClick={addSegment}
+          className="fixed bottom-4 left-4 md:relative md:bottom-auto md:left-auto w-12 h-12 flex items-center justify-center text-2xl bg-amber-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform"
+          aria-label="Add segment"
+        >
+          <Plus />
+        </button>
       </div>
     </div>
   );
