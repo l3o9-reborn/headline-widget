@@ -31,7 +31,7 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
   return (
     <div className="relative w-full h-full flex flex-col text-foreground/80 gap-4">
       {/* Segments */}
-      <div className="flex flex-col gap-4 w-full h-full overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex flex-col gap-2 lg:gap-4 w-full h-full overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {segments.map((seg, idx) => (
           <div
             key={idx}
@@ -57,7 +57,7 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
                   onChange={(e) =>
                     updateSegment(idx, { style: { backgroundColor: e.target.value } })
                   }
-                  className="w-24 h-8 rounded-md cursor-pointer "
+                  className="w-16 md:w-24  h-8 rounded-md cursor-pointer "
                   title="Background object"
                 />
               </div>
@@ -71,8 +71,9 @@ export default function SegmentControlsPanel({ settings, setSettings }: Props) {
                     updateSegment(idx, { style: { underline: e.target.checked } })
                   }
                   className="size-4 accent-amber-500 cursor-pointer"
+                  title="underline"
                 />
-                <span className="text-sm font-medium">Underline</span>
+                <span className="text-xs md:text-sm font-light   md:hidden lg:block">Underline</span>
               </label>
 
               {/* Remove */}

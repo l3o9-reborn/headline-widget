@@ -17,15 +17,12 @@
   --spacing-md: 1rem;
   --spacing-lg: 2rem;
 
-
-  /* Light Mode (default) */
+  /* Colors - Light Mode */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
 
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-
-
 }
 
 /* -------------------- Dark Mode Overrides -------------------- */
@@ -34,29 +31,26 @@
   --foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-
-
 }
 
 /* -------------------- Tailwind Theme Inline -------------------- */
 @theme inline {
-
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-accent: var(--accent, #f59e0b);
+  --color-accent-foreground: var(--accent-foreground, #fff);
+  --color-destructive: var(--destructive, #ef4444);
+  --color-border: var(--border, #d1d5db);
+  --color-input: var(--input, #f9fafb);
+  --color-ring: var(--ring, #f59e0b);
 }
 
 /* -------------------- Base Styles -------------------- */
 @layer base {
-  * {
+  *, *::before, *::after {
     @apply border-border outline-ring/50;
   }
 
@@ -70,15 +64,21 @@
     scroll-behavior: smooth;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-semibold text-foreground;
     line-height: 1.25;
     margin-bottom: 0.5rem;
   }
-}
 
+  a {
+    @apply text-accent hover:underline transition-colors;
+  }
+
+  button {
+    @apply cursor-pointer transition-transform duration-200;
+  }
+
+  input, textarea, select {
+    @apply border border-border rounded px-3 py-2 bg-input text-foreground focus:outline-none focus:ring-2 focus:ring-ring;
+  }
+}
