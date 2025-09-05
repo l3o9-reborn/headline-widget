@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Headline Builder
 
-## Getting Started
+A real-time headline customization tool built with Next.js, React, TypeScript, and Tailwind CSS. Design animated headlines with custom fonts, gradients, colors, and text segments, then preview and export your settings instantly.
 
-First, run the development server:
+Features
 
-```bash
+Live Preview: Updates headline instantly as you adjust settings.
+
+Multiple Text Segments: Add, remove, and style each segment individually (background, underline).
+
+Font Customization: Choose font family, size, and weight.
+
+Gradient Support: Toggle gradients, pick start/end colors, and select direction.
+
+Animations: Fade in, hover glow, per-letter, and text shadow effects.
+
+Timing Controls: Customize animation duration and delay.
+
+Export Options: Download JSON settings or copy JS snippet for easy reuse.
+
+Responsive Design: On small devices, preview sticks to top while controls scroll.
+
+Accessible UI: Clean, minimalistic interface with Tailwind styling.
+
+Theme: Dark mode and theme toggle
+
+Tech Stack
+
+Frontend: Next.js, React, TypeScript
+
+Styling: Tailwind CSS
+
+Animations: Framer Motion
+
+Icons: Lucide React
+
+Installation
+git clone https://github.com/l3o9-reborn/headline-widget.git
+cd headline-builder
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open http://localhost:3000
+ to start.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Usage
 
-## Learn More
+Customize fonts, size, weight, gradient, and animation.
 
-To learn more about Next.js, take a look at the following resources:
+Add and style multiple headline segments.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Preview changes live.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Export JSON or copy JS code to use in your project.
 
-## Deploy on Vercel
+Future Enhancements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Drag & drop segment ordering
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Local and cloud save for headline settings
+
+More animation types (bounce, rotate, scale)
