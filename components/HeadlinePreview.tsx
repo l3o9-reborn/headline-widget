@@ -1,10 +1,12 @@
 "use client";
 
-import type { CSSProperties } from "react";
-import { motion } from "framer-motion";
-import type { HeadlineSettings, HeadlineSegment, GradientDirection, AnimationType } from "@/lib/types";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import type { HeadlineSettings, GradientDirection } from "@/lib/types";
 
-interface Props { settings: HeadlineSettings }
+interface Props {
+  settings: HeadlineSettings;
+}
 
 const dirToDeg = (dir: GradientDirection): string => {
   switch (dir) {
@@ -33,120 +35,81 @@ export default function HeadlinePreview({ settings }: Props) {
     segments = [],
   } = settings;
 
-  const transition = { duration, delay, ease: "easeInOut" } as const;
-
-  const baseH1Class = "text-center flex flex-wrap justify-center gap-1 leading-snug text-foreground";
-
+  const containerRef = useRef<HTMLHeadingElement>(null);
   const textGradient = makeGradient(gradientDirection, gradientColors[0], gradientColors[1]);
 
-  const segmentWrapperStyle: CSSProperties = { display: "inline-block", marginRight: "0.25em", position: "relative" };
+  useEffect(() => {
+    if (!containerRef.current) return;
 
-  const computeTextStyle = (seg?: HeadlineSegment): CSSProperties => {
-    const weight = seg?.style?.fontWeight ?? fontWeight;
+    const letters = containerRef.current.querySelectorAll(".letter");
+    const tl = gsap.timeline({ defaults: { ease: "elastic.out(1, 0.6)" } });
 
-    if (gradient) {
-      return {
-        backgroundImage: textGradient,
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        fontWeight: weight,
-        display: "inline-block",
-      } satisfies CSSProperties;
+    if (animationType === "perLetter") {
+      tl.fromTo(
+        letters,
+        { y: -100, rotation: -15, scale: 0.6, opacity: 0 },
+        { y: 0, rotation: 0, scale: 1, opacity: 1, stagger: 0.05, duration: duration * 1.5, delay }
+      );
+    } else if (animationType === "fade") {
+      tl.fromTo(
+        containerRef.current,
+        { opacity: 0, y: -200, scale: 0.8 },
+        { opacity: 1, y: 0, scale: 1, duration: duration * 1.5, delay, ease: "power3.out" }
+      );
+    } else if (animationType === "textShadow") {
+      tl.fromTo(
+        letters,
+        { y: -250, scale: 0.7, opacity: 0, textShadow: "0 0 0 rgba(0,0,0,0)" },
+        {
+          y: 0,
+          scale: 1,
+          opacity: 1,
+          textShadow: "0 4px 12px rgba(0,0,0,0.4)",
+          stagger: 0.06,
+          duration: duration * 1.5,
+        }
+      );
     }
 
-    return {
-      color: "currentColor",
-      fontWeight: weight,
-      display: "inline-block",
-    } satisfies CSSProperties;
-  };
-
-  const computeUnderlineStyle = (): CSSProperties => {
-    if (gradient) {
-      return {
-        display: "block",
-        height: 2,
-        marginTop: 2,
-        backgroundImage: textGradient,
-        borderRadius: 1,
-      } satisfies CSSProperties;
-    }
-    return {
-      display: "block",
-      height: 2,
-      marginTop: 2,
-      backgroundColor: "currentColor", // follows text color
-      borderRadius: 1,
-    } satisfies CSSProperties;
-  };
-
-  const Chip = ({ seg, idx }: { seg: HeadlineSegment; idx: number }) => {
-    const styleBlock: CSSProperties = seg.style?.backgroundColor
-      ? { backgroundColor: seg.style.backgroundColor, borderRadius: "0.25em", padding: "0.1em 0.25em" }
-      : {};
-
-    const commonMotion = { initial: { opacity: 0, y: 10 }, animate: { opacity: 1, y: 0 } } as const;
-
-    const content = (
-      <motion.span
-        {...commonMotion}
-        transition={{ delay: delay + idx * 0.05, duration }}
-        style={computeTextStyle(seg)}
-      >
-        {seg.text}
-      </motion.span>
-    );
-
-    const contentPerLetter = (
-      <span style={{ display: "inline-block" }}>
-        {Array.from(seg.text).map((ch, i) => (
-          <motion.span
-            key={i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: delay + idx * 0.03 + i * 0.02, duration }}
-            style={computeTextStyle(seg)}
-          >
-            {ch}
-          </motion.span>
-        ))}
-      </span>
-    );
-
-    return (
-      <span key={idx} style={{ ...segmentWrapperStyle, ...styleBlock }}>
-        {animationType === "perLetter" ? contentPerLetter : content}
-        {seg.style?.underline && <span style={computeUnderlineStyle()} />}
-      </span>
-    );
-  };
-
-  const h1HoverProps = (() => {
-    const props: Record<string, unknown> = {};
+    // Hover glow: animate scale + text-shadow without breaking gradient
     if (animationType === "hoverGlow") {
-      props.whileHover = { scale: 1.02, textShadow: "0 0 12px currentColor" };
-      props.transition = { type: "spring", stiffness: 200, damping: 20 };
+      letters.forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          gsap.to(el, { scale: 1.15, textShadow: "0 0 20px #fff", duration: 0.3 });
+        });
+        el.addEventListener("mouseleave", () => {
+          gsap.to(el, { scale: 1, textShadow: "0 0 8px rgba(255,255,255,0.3)", duration: 0.4 });
+        });
+      });
     }
-    return props;
-  })();
-
-  const h1ShadowStyle: CSSProperties = animationType === "textShadow"
-    ? { textShadow: gradient ? "0 2px 12px rgba(0,0,0,0.25)" : "0 2px 0 currentColor" }
-    : {};
+  }, [segments, animationType, delay, duration]);
 
   return (
-    <motion.h1
-      key={animationType}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={transition}
-      style={{ fontFamily, fontSize, fontWeight, ...h1ShadowStyle }}
-      className={baseH1Class}
-      {...h1HoverProps}
+    <h1
+      ref={containerRef}
+      style={{ fontFamily, fontSize, fontWeight }}
+      className="text-center flex flex-wrap justify-center gap-1 leading-snug"
     >
-      {segments.map((seg, i) => (
-        <Chip key={i} seg={seg} idx={i} />
-      ))}
-    </motion.h1>
+      {segments.map((seg, i) =>
+        Array.from(seg.text).map((ch, idx) => (
+          <span
+            key={`${i}-${idx}`}
+            className="letter inline-block"
+            style={{
+              backgroundImage: gradient ? textGradient : undefined,
+              WebkitBackgroundClip: gradient ? "text" : undefined,
+              WebkitTextFillColor: gradient ? "transparent" : undefined,
+              fontWeight,
+              display: "inline-block",
+              marginRight: "0.05em",
+              position: "relative",
+              textShadow: animationType === "textShadow" ? "0 0 0 rgba(0,0,0,0)" : undefined,
+            }}
+          >
+            {ch}
+          </span>
+        ))
+      )}
+    </h1>
   );
 }
