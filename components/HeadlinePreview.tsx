@@ -37,7 +37,7 @@ export default function HeadlinePreview({ settings }: Props) {
   const textGradient = makeGradient(gradientDirection, gradientColors[0], gradientColors[1]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || animationType === "none") return;
 
     const letters = containerRef.current.querySelectorAll(".letter");
     const underlines = containerRef.current.querySelectorAll(".underline");
@@ -59,20 +59,22 @@ export default function HeadlinePreview({ settings }: Props) {
     } else if (animationType === "textShadow") {
       tl.fromTo(
         letters,
-        { y: -250, scale: 0.7, opacity: 0, textShadow: "0 0 0 rgba(0,0,0,0)" },
+        { y: 0, scale: 1, opacity: 1, textShadow: "0 0 0 rgba(0,0,0,0)" },
         { y: 0, scale: 1, opacity: 1, textShadow: "0 4px 12px rgba(0,0,0,0.4)", stagger: 0.06, duration: duration * 1.5 }
       );
     }
 
-    // Animate underlines
-    tl.fromTo(
-      underlines,
-      { scaleX: 0 },
-      { scaleX: 1, transformOrigin: "left center", duration: 0.5, stagger: 0.05 },
-      "<" // start simultaneously with letters
-    );
+    // Animate underlines only if animationType !== textShadow
+    if (animationType !== "textShadow") {
+      tl.fromTo(
+        underlines,
+        { scaleX: 0 },
+        { scaleX: 1, transformOrigin: "left center", duration: 0.5, stagger: 0.05 },
+        "<"
+      );
+    }
 
-    // Hover glow
+    // Hover glow only if selected and not textShadow
     if (animationType === "hoverGlow") {
       letters.forEach((el) => {
         el.addEventListener("mouseenter", () => {
@@ -88,7 +90,7 @@ export default function HeadlinePreview({ settings }: Props) {
   return (
     <h1
       ref={containerRef}
-      style={{ fontFamily, fontSize, fontWeight }}
+      style={{ fontFamily, fontSize, fontWeight, whiteSpace: "pre-wrap" }}
       className="text-center flex flex-wrap justify-center gap-1 leading-snug"
     >
       {segments.map((seg, i) => {
@@ -97,7 +99,10 @@ export default function HeadlinePreview({ settings }: Props) {
           : {};
 
         return (
-          <span key={i} style={{ ...segStyle, position: "relative", display: "inline-block", marginRight: "0.05em" }}>
+          <span
+            key={i}
+            style={{ ...segStyle, position: "relative", display: "inline-block", marginRight: "0.25em" }}
+          >
             {Array.from(seg.text).map((ch, idx) => (
               <span
                 key={`${i}-${idx}`}
@@ -110,7 +115,7 @@ export default function HeadlinePreview({ settings }: Props) {
                   display: "inline-block",
                 }}
               >
-                {ch}
+                {ch === " " ? "\u00A0" : ch}
               </span>
             ))}
             {seg.style?.underline && (
