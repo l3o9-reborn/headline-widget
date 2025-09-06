@@ -23,6 +23,7 @@ export default function Home() {
 
   const [showSegments, setShowSegments] = useState(false);
 
+  //export json data 
   const exportJSON = () => {
     const dataStr =
       "data:text/json;charset=utf-8," +
@@ -33,6 +34,7 @@ export default function Home() {
     dlAnchor.click();
   };
 
+  //copy current style code 
   const copyCode = async () => {
     const code = `const headlineSettings = ${JSON.stringify(settings, null, 2)};`;
     await navigator.clipboard.writeText(code);
@@ -87,7 +89,7 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Scrollable panel content */}
+        {/* Scrollable on small device panel content  */}
         <div className="flex-1 overflow-auto p-6 max-h-[calc(100vh-500px)] md:max-h-[90vh] md:min-h-[90vh] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {!showSegments ? (
             <ControlsPanel settings={settings} setSettings={setSettings} />

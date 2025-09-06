@@ -32,7 +32,7 @@ const roboto = Roboto({
   weight: ["100", "300", "400", "500", "700", "900"], // common weights for Roboto
 });
 
-const baseUrl = 'https://munnahleon.vercel.app';
+const baseUrl = 'https://headline-widget-l3o9-reborn.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),

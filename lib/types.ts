@@ -4,8 +4,7 @@ export type AnimationType = "fade" | "hoverGlow" | "perLetter" | "textShadow"|"n
 
 export interface HeadlineSegmentStyle {
 backgroundColor?: string; // chip background
-underline?: boolean; // draw underline using text color or gradient
-fontWeight?: number; // optional per-segment override (100..900)
+underline?: boolean; //  underline using text color or gradient
 }
 
 
@@ -18,7 +17,7 @@ style?: HeadlineSegmentStyle;
 export interface HeadlineSettings {
 fontFamily: string;
 fontSize: number; // px
-fontWeight: number; // 100..900 numeric for CSS compatibility
+fontWeight: number; // 100..900 
 gradient: boolean; // toggle gradient text
 gradientDirection: GradientDirection;
 gradientColors: [string, string];

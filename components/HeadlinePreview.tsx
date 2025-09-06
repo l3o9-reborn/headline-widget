@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import type { HeadlineSettings, HeadlineSegment, GradientDirection } from "@/lib/types";
+import type { HeadlineSettings, GradientDirection } from "@/lib/types";
 
 interface Props { settings: HeadlineSettings }
 
