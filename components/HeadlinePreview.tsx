@@ -2,11 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import type { HeadlineSettings, GradientDirection } from "@/lib/types";
+import type { HeadlineSettings, HeadlineSegment, GradientDirection } from "@/lib/types";
 
-interface Props {
-  settings: HeadlineSettings;
-}
+interface Props { settings: HeadlineSettings }
 
 const dirToDeg = (dir: GradientDirection): string => {
   switch (dir) {
@@ -42,12 +40,14 @@ export default function HeadlinePreview({ settings }: Props) {
     if (!containerRef.current) return;
 
     const letters = containerRef.current.querySelectorAll(".letter");
+    const underlines = containerRef.current.querySelectorAll(".underline");
+
     const tl = gsap.timeline({ defaults: { ease: "elastic.out(1, 0.6)" } });
 
     if (animationType === "perLetter") {
       tl.fromTo(
         letters,
-        { y: -100, rotation: -15, scale: 0.6, opacity: 0 },
+        { y: -300, rotation: -15, scale: 0.6, opacity: 0 },
         { y: 0, rotation: 0, scale: 1, opacity: 1, stagger: 0.05, duration: duration * 1.5, delay }
       );
     } else if (animationType === "fade") {
@@ -60,18 +60,19 @@ export default function HeadlinePreview({ settings }: Props) {
       tl.fromTo(
         letters,
         { y: -250, scale: 0.7, opacity: 0, textShadow: "0 0 0 rgba(0,0,0,0)" },
-        {
-          y: 0,
-          scale: 1,
-          opacity: 1,
-          textShadow: "0 4px 12px rgba(0,0,0,0.4)",
-          stagger: 0.06,
-          duration: duration * 1.5,
-        }
+        { y: 0, scale: 1, opacity: 1, textShadow: "0 4px 12px rgba(0,0,0,0.4)", stagger: 0.06, duration: duration * 1.5 }
       );
     }
 
-    // Hover glow: animate scale + text-shadow without breaking gradient
+    // Animate underlines
+    tl.fromTo(
+      underlines,
+      { scaleX: 0 },
+      { scaleX: 1, transformOrigin: "left center", duration: 0.5, stagger: 0.05 },
+      "<" // start simultaneously with letters
+    );
+
+    // Hover glow
     if (animationType === "hoverGlow") {
       letters.forEach((el) => {
         el.addEventListener("mouseenter", () => {
@@ -90,26 +91,41 @@ export default function HeadlinePreview({ settings }: Props) {
       style={{ fontFamily, fontSize, fontWeight }}
       className="text-center flex flex-wrap justify-center gap-1 leading-snug"
     >
-      {segments.map((seg, i) =>
-        Array.from(seg.text).map((ch, idx) => (
-          <span
-            key={`${i}-${idx}`}
-            className="letter inline-block"
-            style={{
-              backgroundImage: gradient ? textGradient : undefined,
-              WebkitBackgroundClip: gradient ? "text" : undefined,
-              WebkitTextFillColor: gradient ? "transparent" : undefined,
-              fontWeight,
-              display: "inline-block",
-              marginRight: "0.05em",
-              position: "relative",
-              textShadow: animationType === "textShadow" ? "0 0 0 rgba(0,0,0,0)" : undefined,
-            }}
-          >
-            {ch}
+      {segments.map((seg, i) => {
+        const segStyle: React.CSSProperties = seg.style?.backgroundColor
+          ? { backgroundColor: seg.style.backgroundColor, borderRadius: "0.25em", padding: "0.05em 0.2em" }
+          : {};
+
+        return (
+          <span key={i} style={{ ...segStyle, position: "relative", display: "inline-block", marginRight: "0.05em" }}>
+            {Array.from(seg.text).map((ch, idx) => (
+              <span
+                key={`${i}-${idx}`}
+                className="letter inline-block"
+                style={{
+                  backgroundImage: gradient ? textGradient : undefined,
+                  WebkitBackgroundClip: gradient ? "text" : undefined,
+                  WebkitTextFillColor: gradient ? "transparent" : undefined,
+                  fontWeight,
+                  display: "inline-block",
+                }}
+              >
+                {ch}
+              </span>
+            ))}
+            {seg.style?.underline && (
+              <span
+                className="underline absolute left-0 bottom-0 block h-[2px] rounded"
+                style={{
+                  backgroundImage: gradient ? textGradient : undefined,
+                  width: "100%",
+                  transform: "scaleX(0)",
+                }}
+              />
+            )}
           </span>
-        ))
-      )}
+        );
+      })}
     </h1>
   );
 }
